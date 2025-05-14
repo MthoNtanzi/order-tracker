@@ -206,7 +206,7 @@ const OrderForm: React.FC<OrderFormProps> = ({ order, onSubmit, onCancel }) => {
               <SelectContent>
                 {AVAILABLE_PRODUCTS.map((product) => (
                   <SelectItem key={product.id} value={product.id.toString()}>
-                    {product.name} - ${product.price}
+                    {product.name} - R{product.price}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -245,9 +245,9 @@ const OrderForm: React.FC<OrderFormProps> = ({ order, onSubmit, onCancel }) => {
                 {selectedProducts.map((product) => (
                   <tr key={product.id} className="border-t">
                     <td className="px-4 py-2">{product.name}</td>
-                    <td className="px-4 py-2 text-right">${product.price}</td>
+                    <td className="px-4 py-2 text-right">R{product.price}</td>
                     <td className="px-4 py-2 text-right">{product.quantity}</td>
-                    <td className="px-4 py-2 text-right">${(product.price * product.quantity).toFixed(2)}</td>
+                    <td className="px-4 py-2 text-right">R{(product.price * product.quantity).toFixed(2)}</td>
                     <td className="px-4 py-2 text-right">
                       <Button
                         variant="ghost"
@@ -261,7 +261,7 @@ const OrderForm: React.FC<OrderFormProps> = ({ order, onSubmit, onCancel }) => {
                 ))}
                 <tr className="bg-gray-50 font-medium">
                   <td className="px-4 py-2" colSpan={3}>Total</td>
-                  <td className="px-4 py-2 text-right">${calculateTotal().toFixed(2)}</td>
+                  <td className="px-4 py-2 text-right">R{calculateTotal().toFixed(2)}</td>
                   <td></td>
                 </tr>
               </tbody>

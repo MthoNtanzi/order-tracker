@@ -71,7 +71,7 @@ const RecentOrdersList = () => {
                     <TableCell>{formatDate(order.orderDate)}</TableCell>
                     <TableCell>{customer?.name || 'Unknown'}</TableCell>
                     <TableCell>{getStatusBadge(order.status)}</TableCell>
-                    <TableCell className="text-right">${order.totalAmount.toFixed(2)}</TableCell>
+                    <TableCell className="text-right">R{order.totalAmount.toFixed(2)}</TableCell>
                   </TableRow>
                 );
               })}

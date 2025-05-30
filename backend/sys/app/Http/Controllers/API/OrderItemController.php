@@ -3,47 +3,40 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\OrderItemResource;
+use App\Models\OrderItem;
 use Illuminate\Http\Request;
 
 class OrderItemController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function index($orderId)
     {
-        //
+        $items = OrderItem::with('product')->where('order_id', $orderId)->get();
+        return OrderItemResource::collection($items);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function show($orderId, $productId)
     {
-        //
+        $item = OrderItem::with('product')
+            ->where('order_id', $orderId)
+            ->where('pro_id', $productId)
+            ->firstOrFail();
+
+        return new OrderItemResource($item);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function update(Request $request, $orderId, $productId)
     {
-        //
-    }
+        $validated = $request->validate([
+            'quantity' => 'sometimes|integer|min:1',
+            'price' => 'sometimes|numeric|min:0',
+        ]);
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
+        $item = OrderItem::where('order_id', $orderId)
+            ->where('pro_id', $productId)
+            ->firstOrFail();
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        $item->update($validated);
+        return new OrderItemResource($item);
     }
 }

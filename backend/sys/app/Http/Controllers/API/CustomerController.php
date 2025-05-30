@@ -3,56 +3,59 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
-use App\Http\Resources\UserResource;
-use App\Models\User;
+use App\Http\Resources\CustomerResource;
+use App\Models\Customer;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
-class UserController extends Controller
+class CustomerController extends Controller
 {
     public function index()
     {
-        $users = User::all();
-        return UserResource::collection($users);
+        $customers = Customer::all();
+        return CustomerResource::collection($customers);
     }
 
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'user_name' => 'required|string|max:50',
-            'user_email' => 'required|string|email|max:255|unique:users',
-            'user_password' => 'required|string|min:8',
+            'cus_name' => 'required|string|max:50',
+            'cus_email' => 'required|string|email|max:255|unique:customers',
+            'cus_password' => 'required|string|min:8',
+            'cus_number' => 'required|string|max:255',
         ]);
 
-        $validated['user_password'] = Hash::make($validated['user_password']);
-        $user = User::create($validated);
+        $validated['cus_password'] = Hash::make($validated['cus_password']);
+        $customer = Customer::create($validated);
 
-        return new UserResource($user);
+        return new CustomerResource($customer);
     }
 
-    public function show(User $user)
+    public function show(Customer $customer)
     {
-        return new UserResource($user);
+        return new CustomerResource($customer);
     }
 
-    public function update(Request $request, User $user)
+    public function update(Request $request, Customer $customer)
     {
         $validated = $request->validate([
-            'user_name' => 'sometimes|string|max:50',
-            'user_email' => 'sometimes|string|email|max:255|unique:users,user_email,'.$user->user_id.',user_id',
-            'user_password' => 'sometimes|string|min:8',
+            'cus_name' => 'sometimes|string|max:50',
+            'cus_email' => 'sometimes|string|email|max:255|unique:customers,cus_email,'.$customer->cus_id.',cus_id',
+            'cus_password' => 'sometimes|string|min:8',
+            'cus_number' => 'sometimes|string|max:255',
         ]);
 
-        if (isset($validated['user_password'])) {
-            $validated['user_password'] = Hash::make($validated['user_password']);
+        if (isset($validated['cus_password'])) {
+            $validated['cus_password'] = Hash::make($validated['cus_password']);
         }
 
-        $user->update($validated);
-        return new UserResource($user);
+        $customer->update($validated);
+        return new CustomerResource($customer);
     }
 
-    public function destroy(User $user)
+    public function destroy(Customer $customer)
     {
-        $user->delete();
+        $customer->delete();
         return response()->json(null, 204);
     }
 }

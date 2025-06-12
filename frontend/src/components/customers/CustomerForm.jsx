@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -13,7 +12,7 @@ const customerSchema = z.object({
   phone: z.string().min(5, { message: 'Phone number is required' }),
 });
 
-const CustomerForm = ({ customer, onSubmit, onCancel }) => {
+const CustomerForm = ({ customer, onCancel }) => {
   const {
     register,
     handleSubmit,
@@ -33,24 +32,58 @@ const CustomerForm = ({ customer, onSubmit, onCancel }) => {
         },
   });
 
+  const onSubmit = async (data) => {
+    try {
+      const response = await fetch(
+        `http://127.0.0.1:8000/api/customers/${customer.id}`,
+        {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+            Accept: 'application/json',
+          },
+          body: JSON.stringify(data),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error('Failed to update customer');
+      }
+
+      const updatedCustomer = await response.json();
+      alert('Customer updated successfully!');
+      console.log('Updated customer:', updatedCustomer);
+      // You can redirect or refresh here if needed
+    } catch (error) {
+      console.error('Error updating customer:', error.message);
+      alert('There was an error updating the customer.');
+    }
+  };
+
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
       <div className="space-y-2">
         <Label htmlFor="name">Customer Name</Label>
         <Input id="name" {...register('name')} placeholder="Customer name" />
-        {errors.name && <p className="text-sm text-red-500">{errors.name.message}</p>}
+        {errors.name && (
+          <p className="text-sm text-red-500">{errors.name.message}</p>
+        )}
       </div>
 
       <div className="space-y-2">
         <Label htmlFor="email">Email</Label>
         <Input id="email" type="email" {...register('email')} placeholder="Email address" />
-        {errors.email && <p className="text-sm text-red-500">{errors.email.message}</p>}
+        {errors.email && (
+          <p className="text-sm text-red-500">{errors.email.message}</p>
+        )}
       </div>
 
       <div className="space-y-2">
         <Label htmlFor="phone">Phone</Label>
         <Input id="phone" {...register('phone')} placeholder="Phone number" />
-        {errors.phone && <p className="text-sm text-red-500">{errors.phone.message}</p>}
+        {errors.phone && (
+          <p className="text-sm text-red-500">{errors.phone.message}</p>
+        )}
       </div>
 
       <div className="flex justify-end space-x-2 pt-4">
